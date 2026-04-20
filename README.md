@@ -8,32 +8,32 @@ The system uses hardware timers and Interrupt Service Routines (ISRs) to precise
 
 ```mermaid
 flowchart TD
-    subgraph Microcontroller [ATmega328P Bare-Metal C]
-        Timer1[16-bit Timer1\nToF Counter & ISR]
-        Timer2[8-bit Timer2\nPWM Servo Sweep]
-        UART[Hardware UART\n115200 Baud]
+    subgraph Microcontroller
+        Timer1["16-bit Timer1\nToF Counter & ISR"]
+        Timer2["8-bit Timer2\nPWM Servo Sweep"]
+        UART["Hardware UART\n115200 Baud"]
         
-        Timer1 -->|Microsecond Capture| Dist[Distance Calc]
-        Timer2 -->|Position Angle| Angle[Angle Calc]
+        Timer1 -->|"Microsecond Capture"| Dist["Distance Calc"]
+        Timer2 -->|"Position Angle"| Angle["Angle Calc"]
         
         Dist --> UART
         Angle --> UART
     end
 
     subgraph Peripherals
-        US[HC-SR04 Ultrasonic\nTrigger / Echo]
-        Servo[Micro Servo\n180-degree Scan]
+        US["HC-SR04 Ultrasonic\nTrigger / Echo"]
+        Servo["Micro Servo\n180-degree Scan"]
         
         Timer1 -.->|Trigger| US
-        US -.->|Echo INT0| Timer1
-        Timer2 -.->|PWM Signal| Servo
+        US -.->|"Echo INT0"| Timer1
+        Timer2 -.->|"PWM Signal"| Servo
     end
 
-    subgraph Host Software (Python)
-        PySerial[pyserial\nData Intake]
-        Matplotlib[matplotlib\nPolar Plotting]
+    subgraph Host Software
+        PySerial["pyserial\nData Intake"]
+        Matplotlib["matplotlib\nPolar Plotting"]
         
-        UART -.->|distance, angle| PySerial
+        UART -.->|"distance, angle"| PySerial
         PySerial --> Matplotlib
     end
 ```
